@@ -9,12 +9,20 @@ const db = sequelize.define('expenses', {
         primaryKey: true,
         autoIncrement: true 
     },
-    title: {
-        type: DataTypes.STRING, 
-        allowNull: false
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true
     },
     amount: {
         type: DataTypes.DOUBLE,
+        allowNull: false
+    },
+    date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    },
+    status: {
+        type: DataTypes.ENUM('PENDENTE', 'PAGA'),
         allowNull: false
     },
     categoryId: {
@@ -27,15 +35,18 @@ const db = sequelize.define('expenses', {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     },
-    date: {
-        type: DataTypes.DATEONLY,
-        allowNull: false
-    },
-    description: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'users',
+            key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    }
 }, {
+    createdAt: false,
     updatedAt: false
 });
 

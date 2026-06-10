@@ -28,9 +28,9 @@ class CategoryView {
 
     async create(req, res) {
         try {
-            const { description } = req.body;
+            const { name, description } = req.body;
 
-            const category = await CategoryController.create(description);
+            const category = await CategoryController.create(name, description);
 
             res.status(201).json(category);
         } catch (error) {
@@ -42,10 +42,10 @@ class CategoryView {
 
     async update(req, res) {
         try {
-            const { description } = req.body;
+            const { name, description } = req.body;
             const { id } = req.params;
 
-            const category = await CategoryController.update(description, Number(id));
+            const category = await CategoryController.update(name, description, Number(id));
 
             res.status(200).json(category);
         } catch (error) {
