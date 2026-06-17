@@ -1,13 +1,13 @@
 const sequelize = require('./database.js');
-const { fn, col } = require('sequelize');
-const { DataTypes } = require('sequelize'); 
+const { fn, col, Op } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const CategoryModel = require('./category.js');
 
 const db = sequelize.define('expenses', {
     id: {
-        type: DataTypes.INTEGER, 
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true 
+        autoIncrement: true
     },
     description: {
         type: DataTypes.STRING,
@@ -51,41 +51,46 @@ const db = sequelize.define('expenses', {
 });
 
 class ExpenseModel {
-    constructor() {}
-    
-    async getAll() {
-        return db.findAll();
+    constructor() { }
+
+    async getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status) {
+        return db.findAll({
+            where: {
+               categoryId,
+               date: { [Op.between]: [dateIni, dateFim]}
+            }
+        });
     }
-    
+
     async getById(id) {
         return db.findOne({
             where: { id }
         });
     }
-    
+
     async create(amount, date, description, status, categoryId, userId) {
-        return db.create({amount, date, description, status, categoryId, userId})
+        return db.create({ amount, date, description, status, categoryId, userId })
     }
-    
+
     async update(amount, date, description, status, categoryId, userId, id) {
         const expense = await db.findByPk(id);
-        
+
         if (!expense) {
             return null;
         }
-        
+
         expense.amount = amount;
         expense.date = date;
         expense.description = description;
         expense.satus = satus;
         expense.categoryId = categoryId;
         expense.userId = userId;
-        
+
         await expense.save();
-        
+
         return expense;
     }
-    
+
     async delete(id) {
         return db.destroy({
             where: { id }
@@ -99,7 +104,7 @@ class ExpenseModel {
             ]
         });
     }
-    
+
     async getTotalExpensesByCategory() {
         return db.findAll({
             attributes: [

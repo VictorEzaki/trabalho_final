@@ -22,7 +22,7 @@ async function main() {
     await sequelize.authenticate();
     console.log('Autenticação com sucesso!');
     
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     console.log('Sincronização com banco de dados realizada.');
     console.log('Conexão com o banco de dados estabelecida com sucesso.');
     

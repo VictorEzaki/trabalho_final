@@ -12,7 +12,8 @@ router.put("/expenses/:id", authMiddleware, ExpenseView.update);
 router.delete("/expenses/:id", authMiddleware, ExpenseView.delete);
 
 // Extras
-router.get("/expenses/summary/total", authMiddleware, ExpenseView.getTotalExpenses);
-router.get("/expenses/summary/category", authMiddleware, ExpenseView.getTotalExpensesByCategory);
+router.get("/dashboard/total-expenses", authMiddleware, ExpenseView.getTotalExpenses);
+router.get("/dashboard/expenses-count", authMiddleware, ExpenseView.getTotalExpensesByCategory);
+router.get("/dashboard/expenses-by-category", authMiddleware, ExpenseView.getTotalExpensesByCategory);
 
 module.exports = router;

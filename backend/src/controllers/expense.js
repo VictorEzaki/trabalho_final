@@ -3,24 +3,15 @@ const CategoryModel = require('../models/category');
 const ExpenseModel = require('../models/expense');
 
 class ExpenseController {
-    async getAll(category, date) {
-        let expenses = await ExpenseModel.getAll();
+    async getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status) {
+        categoryId = categoryId ?? '';
+        dateIni    = dateIni ?? '';
+        dateFim    = dateFim ?? '';
+        vlMin      = vlMin ?? '';
+        vlMax      = vlMax ?? '';
+        status     = status ?? '';
         
-        if (category) {
-            expenses = expenses.filter(
-                (expense) => expense.category.toLowerCase() === category.toLowerCase(),
-            );
-        }
-        
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-        if (date !== undefined && !dateRegex.test(date)) {
-            const error = new Error('Formato de data inválido. Use YYYY-MM-DD.');
-            error.status = 400;
-            throw error;
-        }
-        if (date) {
-            expenses = expenses.filter((expense) => expense.date === date);
-        }
+        let expenses = await ExpenseModel.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status);
         
         return expenses;
     }

@@ -4,9 +4,9 @@ const ExpenseController = require('../controllers/expense');
 class ExpenseView {
     async getAll(req, res) {
         try {
-            let { category, date } = req.query;
+            let { categoryId, dateIni, dateFim, vlMin, vlMax, status } = req.query;
 
-            const expenses = await ExpenseController.getAll(category, date);
+            const expenses = await ExpenseController.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status);
 
             res.status(200).json(expenses);
         } catch (error) {
