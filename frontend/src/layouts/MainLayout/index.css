@@ -12,9 +12,18 @@
 }
 
 .sidebar h2 {
-  margin: 0 0 32px;
   color: var(--color-primary);
   font-size: 24px;
+  padding-left: 12px;
+}
+
+.header-sidebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-sidebar:hover {
+  cursor: pointer;
 }
 
 .main-layout-content {

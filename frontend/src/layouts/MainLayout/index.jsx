@@ -1,6 +1,8 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./../../contexts/AuthContext";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import SidebarNav from "./../../components/SideBarNav";
 import "./index.css";
 
@@ -16,7 +18,10 @@ function MainLayout() {
   return (
     <div className="main-layout">
       <aside className="sidebar">
-        <h2>FinanceApp</h2>
+        <div className="header-sidebar">
+          <h2>FinanceApp</h2>
+          <FontAwesomeIcon icon={faBars} />
+        </div>
         <SidebarNav />
       </aside>
 
