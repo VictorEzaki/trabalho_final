@@ -82,7 +82,7 @@ class ExpenseModel {
         expense.amount = amount;
         expense.date = date;
         expense.description = description;
-        expense.satus = satus;
+        expense.status = status;
         expense.categoryId = categoryId;
         expense.userId = userId;
         
