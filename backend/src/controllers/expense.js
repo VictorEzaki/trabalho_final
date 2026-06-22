@@ -214,24 +214,28 @@ class ExpenseController {
         return ExpenseModel.delete(Number(id));
     }
     
-    async getTotalExpenses() {
-        const expenses = await this.getAll();
-        
-        const totalExpense = expenses.reduce((acc, expense) => {
-            return acc + (Number(expense.amount) || 0);
-        }, 0);
+    async getTotalExpenses(userId) {
+        const totalExpense = await ExpenseModel.getTotalExpenses(userId);
         
         return {
             total: totalExpense
         };
     }
-
-    async getTotalExpenses() {
-        return await ExpenseModel.getTotalExpenses();
+    
+    async getQuantidadeExpenses(userId) {
+        const quantidadeExpenses = await ExpenseModel.getQuantidadeExpenses(userId);
+        
+        return {
+            total: quantidadeExpenses
+        };
     }
     
-    async getTotalExpensesByCategory() {
-        return await ExpenseModel.getTotalExpensesByCategory();
+    async getTotalExpensesByCategory(userId) {
+        const totalbyCategory = await ExpenseModel.getTotalExpensesByCategory(userId);
+        
+        return {
+            total: totalbyCategory
+        };
     }
 }
 

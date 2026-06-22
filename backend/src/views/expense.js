@@ -73,7 +73,9 @@ class ExpenseView {
 
     async getTotalExpenses(req, res) {
         try {
-            const totalExpenses = await ExpenseController.getTotalExpenses();
+            const { userId } = req.params;
+
+            const totalExpenses = await ExpenseController.getTotalExpenses(userId);
 
             res.status(200).json(totalExpenses);
         } catch (error) {
@@ -83,9 +85,25 @@ class ExpenseView {
         }
     }
 
+    async getQuantidadeExpenses(req, res) {
+        try {
+            const { userId } = req.params;
+
+            const quantidadeExpenses = await ExpenseController.getQuantidadeExpenses(userId);
+
+            res.status(200).json(quantidadeExpenses);
+        } catch (error) {
+            res.status(400).json({
+                error: error.message,
+            });
+        }
+    }
+
     async getTotalExpensesByCategory(req, res) {
         try {
-            const totalExpensesByCategory = await ExpenseController.getTotalExpensesByCategory();
+            const { userId } = req.params;
+
+            const totalExpensesByCategory = await ExpenseController.getTotalExpensesByCategory(userId);
 
             res.status(200).json(totalExpensesByCategory);
         } catch (error) {

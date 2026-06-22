@@ -8,7 +8,7 @@ const db = sequelize.define('categories', {
         autoIncrement: true 
     },
     name: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     },
     description: {

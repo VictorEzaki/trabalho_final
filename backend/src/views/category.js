@@ -34,7 +34,7 @@ class CategoryView {
 
             res.status(201).json(category);
         } catch (error) {
-            res.status(error.status).json({
+            res.status(500).json({
                 error: error.message,
             });
         }

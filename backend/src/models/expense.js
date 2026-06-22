@@ -52,72 +52,101 @@ const db = sequelize.define('expenses', {
 
 class ExpenseModel {
     constructor() { }
-
+    
     async getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status) {
         return db.findAll({
             where: {
-               categoryId,
-               date: { [Op.between]: [dateIni, dateFim]}
+                categoryId,
+                date: { [Op.between]: [dateIni, dateFim]}
             }
         });
     }
-
+    
     async getById(id) {
         return db.findOne({
             where: { id }
         });
     }
-
+    
     async create(amount, date, description, status, categoryId, userId) {
         return db.create({ amount, date, description, status, categoryId, userId })
     }
-
+    
     async update(amount, date, description, status, categoryId, userId, id) {
         const expense = await db.findByPk(id);
-
+        
         if (!expense) {
             return null;
         }
-
+        
         expense.amount = amount;
         expense.date = date;
         expense.description = description;
         expense.satus = satus;
         expense.categoryId = categoryId;
         expense.userId = userId;
-
+        
         await expense.save();
-
+        
         return expense;
     }
-
+    
     async delete(id) {
         return db.destroy({
             where: { id }
         });
     }
-
-    async getTotalExpenses() {
-        return db.findAll({
-            attributes: [
-                [fn('SUM', col('amount')), 'total']
-            ]
+    
+    async getTotalExpenses(userId) {
+        const total = await db.sum("amount", {
+            where: {
+                userId: userId
+            }
         });
+        
+        return {
+            total: Number(total || 0)
+        };
     }
-
-    async getTotalExpensesByCategory() {
-        return db.findAll({
-            attributes: [
-                'categoryId',
-                [fn('SUM', col('amount')), 'total']
-            ],
-            include: [{
-                model: CategoryModel.Category,
-                as: 'category',
-                attributes: ['description']
-            }],
-            group: ['categoryId', 'category.id']
+    
+    async getQuantidadeExpenses(userId) {
+        const quantidade = await db.count({
+            where: {
+                userId: userId
+            }
         });
+        
+        return {
+            quantidade
+        };
+    }
+    
+    async getTotalExpensesByCategory(userId) {
+        const expensesByCategory = await db.findAll({
+            attributes: [
+                [fn("SUM", col("expenses.amount")), "total"]
+            ],
+            include: [
+                {
+                    model: CategoryModel.Category,
+                    as: "categories",
+                    attributes: ["name"]
+                }
+            ],
+            where: {
+                userId: userId
+            },
+            group: ["categories.id", "categories.name"],
+            raw: true,
+            nest: true
+        });
+        
+        const formattedResult = expensesByCategory.map((item) => ({
+            categoria: item.categories.name,
+            total: Number(item.total || 0)
+        }));
+        
+        return formattedResult;
     }
 }
 
