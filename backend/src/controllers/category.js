@@ -1,4 +1,5 @@
 // validações e regra de negócio
+const HttpError = require('../errors/HttpError');
 const CategoryModel = require('../models/category');
 
 class CategoryController {
@@ -8,22 +9,16 @@ class CategoryController {
     
     async getById(id) {
         if (!id) {
-            const error = new Error('ID não informado.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'ID é obrigatório.');
         }
         
         if (id < 1) {
-            const error = new Error('ID não pode ser menor que 1.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'ID não pode ser menor que 1.');
         }
         
         const category = await CategoryModel.getById(id); 
         if (!category) {
-            const error = new Error('Categoria não encontrada.');
-            error.status = 404;
-            throw error;
+            throw new HttpError(404, 'Categoria não encontrada.');
         }
         
         return category;
@@ -32,17 +27,13 @@ class CategoryController {
     async create(name, description) {
         // verifica se foi enviado com o tipo correto(string)
         if (description !== undefined && typeof description !== "string") {
-            const error = new Error("Descrição de categoria ausente ou inválido.");
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, "Descrição de categoria ausente ou inválido.");
         }
         
         const categoryCreated = await CategoryModel.create(name, description)
         
         if (!categoryCreated) {
-            const error = new Error('Erro ao criar categoria.');
-            error.status = 500;
-            throw error;
+            throw new HttpError(500, 'Erro ao criar categoria.');
         }
         
         return categoryCreated;
@@ -52,37 +43,27 @@ class CategoryController {
         // validações da regra de negócio
         // ID é obrigatório para edição
         if (!id) {
-            const error = new Error('ID é obrigatório.')
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'ID é obrigatório.')
         }
         
         // verifica se ID é maior que zero
         if (id < 1) {
-            const error = new Error('ID não pode ser menor que 1.')
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'ID não pode ser menor que 1.')
         }
         
         // verifica se foi enviado com o tipo correto(string)
         if (description !== undefined && typeof description !== "string") {
-            const error = new Error("Descrição de categoria ausente ou inválido.");
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, "Descrição de categoria ausente ou inválido.");
         }
         
         const category = await CategoryModel.getById(id);
         if (!category) {
-            const error = new Error('Categoria não encontrada.');
-            error.status = 404;
-            throw error;
+            throw new HttpError(404, 'Categoria não encontrada.');
         }
         
         const categoryUpdated = await CategoryModel.update(name, description, id);
         if (!categoryUpdated) {
-            const error = new Error('Ocorreu um erro ao editar a categoria!');
-            error.status = 500;
-            throw error;
+            throw new HttpError(500, 'Ocorreu um erro ao editar a categoria!');
         }
         
         return categoryUpdated;
@@ -101,9 +82,7 @@ class CategoryController {
         
         const category = await CategoryModel.getById(Number(id));
         if (!category) {
-            const error = new Error('Categoria não encontrada.');
-            error.status = 404;
-            throw error;
+            throw new HttpError(404, 'Categoria não encontrada.');
         }
         
         return CategoryModel.delete(Number(id));

@@ -2,6 +2,7 @@ const UserModel = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const authConfig = require('../config/auth');
+const HttpError = require('../errors/HttpError');
 
 class UserController {
     constructor() {
@@ -21,9 +22,7 @@ class UserController {
         const users = (await UserModel.getAllUsers()).map(u => this.mapUser(u));
         
         if (!users) {
-            const error = new Error('Ocorreu um erro ao buscar usuários.');
-            error.status = 500;
-            throw error;
+            throw new HttpError(500, 'Ocorreu um erro ao buscar usuários.');
         }
         
         return users;
@@ -31,40 +30,28 @@ class UserController {
     
     async create(email, password, name) {
         if (!email) {
-            const error = new Error('Email é um campo obrigatório.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'Email é um campo obrigatório.');
         }
         
         if (!password) {
-            const error = new Error('Senha é um campo obrigatório.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'Senha é um campo obrigatório.');
         }
         
         if (!name) {
-            const error = new Error('Nome é um campo obrigatório.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'Nome é um campo obrigatório.');
         }
         
         if (password.length < 6) {
-            const error = new Error('A senha deve conter pelo menos 6 caracteres');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'A senha deve conter pelo menos 6 caracteres');
         }
         
         if (email.length < 5 || !email.includes('@')) {
-            const error = new Error('O email deve conter pelo menos 5 caracteres e incluir um "@"');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'O email deve conter pelo menos 5 caracteres e incluir um "@"');
         }
         
         const userExists = await UserModel.getUserByEmail(email);
         if (userExists) {
-            const error = new Error('Já existe um usuário cadastrado com este email.');
-            error.status = 409;
-            throw error;
+            throw new HttpError(409, 'Já existe um usuário cadastrado com este email.');
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
@@ -78,23 +65,17 @@ class UserController {
     
     async login(email, password) {
         if (!email || !password) {
-            const error = new Error('Email e senha são obrigatórios.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'Email e senha são obrigatórios.');
         }
         
         const user = await UserModel.getUserByEmail(email);
         if (!user) {
-            const error = new Error('Credenciais inválidas.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'Credenciais inválidas.');
         }
 
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) {
-            const error = new Error('Credenciais inválidas.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'Credenciais inválidas.');
         }
         
         const token = jwt.sign(
@@ -113,9 +94,7 @@ class UserController {
         const user = await UserModel.getUserById(id);
 
         if (!user) {
-            const error = new Error('Nenhum usuário encontrado.');
-            error.status = 404;
-            throw error;
+            throw new HttpError(404, 'Nenhum usuário encontrado.');
         }
         
         return this.mapUser(user);
@@ -123,47 +102,33 @@ class UserController {
     
     async update(id, email, password, name) {
         if (!email) {
-            const error = new Error('Email é um campo obrigatório.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'Email é um campo obrigatório.');
         }
         
         if (!password) {
-            const error = new Error('Senha é um campo obrigatório.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'Senha é um campo obrigatório.');
         }
         
         if (!name) {
-            const error = new Error('Nome é um campo obrigatório.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'Nome é um campo obrigatório.');
         }
         
         if (password.length < 6) {
-            const error = new Error('A senha deve conter pelo menos 6 caracteres');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'A senha deve conter pelo menos 6 caracteres');
         }
         
         if (email.length < 5 || !email.includes('@')) {
-            const error = new Error('O email deve conter pelo menos 5 caracteres e incluir um "@"');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'O email deve conter pelo menos 5 caracteres e incluir um "@"');
         }
         
         const userExists = await UserModel.getUserById(Number(id));
         if (!userExists) {
-            const error = new Error('Usuário não encontrado.');
-            error.status = 404;
-            throw error;
+            throw new HttpError(404, 'Usuário não encontrado.');
         }
         
         const emailExists = await UserModel.getUserByEmail(email);
         if (emailExists && emailExists.id !== Number(id)) {
-            const error = new Error('Já existe um usuário cadastrado com este email.');
-            error.status = 409;
-            throw error;
+            throw new HttpError(409, 'Já existe um usuário cadastrado com este email.');
         }
         
         const user = await UserModel.updateUser(id, email, password, name);
@@ -178,23 +143,17 @@ class UserController {
     async delete(id) {
         // ID é obrigatório para edição
         if (!id) {
-            const error = new Error('ID é obrigatório.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'ID é obrigatório.');
         }
         
         // verifica se ID é maior que zero
         if (id < 1) {
-            const error = new Error('ID não pode ser menor que 1.');
-            error.status = 400;
-            throw error;
+            throw new HttpError(400, 'ID não pode ser menor que 1.');
         }
         
         const user = await UserModel.getUserById(Number(id));
         if (!user) {
-            const error = new Error('Usuário não encontrado.');
-            error.status = 404;
-            throw error;
+            throw new HttpError(404, 'Usuário não encontrado.');
         }
         
         return await UserModel.deleteUser(id);

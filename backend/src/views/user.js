@@ -1,52 +1,53 @@
 const UserController = require('../controllers/user');
+const HttpError = require('./../errors/HttpError');
 
 class UserView {
     constructor() {
     }
 
-    async login(req, res) {
+    async login(req, res, next) {
         try {
             const { email, password } = req.body;
 
             const auth = await UserController.login(email, password);
             return res.json(auth);
         } catch (error) {
-            return res.status(401).json({ error: error.message });
+            next(error)
         }
     }
 
-    async getAll(req, res) {
+    async getAll(req, res, next) {
         try {
             const users = await UserController.getAll();
             res.json(users);
         } catch (error) {
-            res.status(error.status || 500).json({ error: error.message });
+            next(error)
         }
     }
 
-    async create(req, res) {
+    async create(req, res, next) {
         try {
             const { email, password, name } = req.body;
 
             const newUser = await UserController.create(email, password, name);
             res.status(201).json(newUser);
         } catch (error) {
-            res.status(error.status || 500).json({ error: error.message });
+            next(error)
         }
     }
 
-    async getById(req, res) {
+    async getById(req, res, next) {
         try {
             const id = Number(req.params.id);
             const user = await UserController.getById(id);
 
             res.json(user);
         } catch (error) {
-            res.status(error.status || 500).json({ error: error.message });
+            next(error)
         }
     }
 
-    async update(req, res) {
+    async update(req, res, next) {
         try {
             const id = Number(req.params.id);
             const { email, password, name } = req.body;
@@ -55,18 +56,18 @@ class UserView {
 
             res.json(updatedUser);
         } catch (error) {
-            res.status(error.status || 500).json({ error: error.message });
+            next(error)
         }
     }
 
-    async delete(req, res) {
+    async delete(req, res, next) {
         try {
             const id = Number(req.params.id);
             const result = await UserController.delete(id);
 
             res.status(204).send();
         } catch (error) {
-            res.status(error.status || 500).json({ error: error.message });
+            next(error)
         }
     }
 }

@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require('cors');
 const app = express();
+const errorHandlerMiddleware = require('./middleware/errorHandler.js');
 
 const sequelize = require('./models/database.js');
 require('./models/associations');
@@ -15,6 +16,8 @@ app.use(express.json());
 app.use('/api', ExpenseRouter);
 app.use('/api', UserRouter);
 app.use('/api', CategoryRouter);
+
+app.use(errorHandlerMiddleware);
 
 async function main() {
   try {
