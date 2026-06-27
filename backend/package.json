@@ -18,7 +18,8 @@
     "dev": "node ./src/app.js",
     "watch": "nodemon ./src/app.js",
     "db:create": "sequelize-cli db:create",
-    "migrate": "sequelize-cli db:migrate"
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:seed": "npx sequelize-cli db:seed:all"
   },
   "dependencies": {
     "cors": "^2.8.6",
