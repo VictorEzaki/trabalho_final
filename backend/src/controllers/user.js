@@ -6,32 +6,26 @@ class UserController {
     constructor() {
     }
     
-    replacePassword(password) {
-        return '*'.repeat(password.length);
-    }
-    
     mapUser(user) {
         const userData = user.dataValues || user;
         
         return {
-            ...userData,
-            password: this.replacePassword(userData.password)
-        };
-    }
-    
-    mapPublicUser(user) {
-        const mapped = this.mapUser(user);
-        
-        return {
-            id: mapped.id,
-            email: mapped.email,
-            name: mapped.name
+            id: userData.id,
+            name: userData.name,
+            email: userData.email
         };
     }
     
     async getAll() {
-        return (await UserModel.getAllUsers())
-        .map(u => this.mapUser(u));
+        const users = (await UserModel.getAllUsers()).map(u => this.mapUser(u));
+        
+        if (!users) {
+            const error = new Error('Ocorreu um erro ao buscar usuários.');
+            error.status = 500;
+            throw error;
+        }
+        
+        return users;
     }
     
     async create(email, password, name) {
@@ -76,20 +70,21 @@ class UserController {
         
         const userJson = user.toJSON();
         
-        return {
-            ...userJson,
-            password: this.replacePassword(userJson.password)
-        };
+        return this.mapUser(user);
     }
     
     async login(email, password) {
         if (!email || !password) {
-            return res.status(400).json({ error: 'Email e senha são obrigatórios' });
+            const error = new Error('Email e senha são obrigatórios.');
+            error.status = 400;
+            throw error;
         }
-
+        
         const user = await UserModel.getUserByEmail(email);
         if (!user || user.password !== password) {
-            throw new Error('Credenciais inválidas');
+            const error = new Error('Credenciais inválidas.');
+            error.status = 400;
+            throw error;
         }
         
         const token = jwt.sign(
@@ -100,12 +95,18 @@ class UserController {
         
         return {
             token,
-            user: this.mapPublicUser(user)
+            user: this.mapUser(user)
         };
     }
     
     async getById(id) {
         const user = await UserModel.getUserById(id);
+
+        if (!user) {
+            const error = new Error('Nenhum usuário encontrado.');
+            error.status = 404;
+            throw error;
+        }
         
         return this.mapUser(user);
     }

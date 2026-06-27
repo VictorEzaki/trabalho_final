@@ -9,7 +9,7 @@ class CategoryView {
             res.status(200).json(categories);
         } catch (error) {
             res.status(error.status || 500).json({
-                error: error.message || 'Ocorreu um erro ao buscar categorias.',
+                error: error.message,
             });
         }
     }
@@ -22,7 +22,7 @@ class CategoryView {
 
             res.status(200).json(category);
         } catch (error) {
-            res.status(error.status).json({ message: error.message });
+            res.status(error.status || 500).json({ message: error.message });
         }
     }
 
@@ -34,7 +34,7 @@ class CategoryView {
 
             res.status(201).json(category);
         } catch (error) {
-            res.status(500).json({
+            res.status(error.status || 500).json({
                 error: error.message,
             });
         }
@@ -49,7 +49,7 @@ class CategoryView {
 
             res.status(200).json(category);
         } catch (error) {
-            res.status(error.status).json({
+            res.status(error.status || 500).json({
                 error: error.message,
             });
         }
@@ -63,7 +63,7 @@ class CategoryView {
 
             res.status(204).send();
         } catch (error) {
-            res.status(400).json({
+            res.status(error.status || 400).json({
                 error: error.message,
             });
         }

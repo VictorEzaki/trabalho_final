@@ -20,7 +20,7 @@ class UserView {
             const users = await UserController.getAll();
             res.json(users);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(error.status || 500).json({ error: error.message });
         }
     }
 
@@ -31,7 +31,7 @@ class UserView {
             const newUser = await UserController.create(email, password, name);
             res.status(201).json(newUser);
         } catch (error) {
-            res.status(error.status).json({ error: error.message });
+            res.status(error.status || 500).json({ error: error.message });
         }
     }
 
@@ -42,7 +42,7 @@ class UserView {
 
             res.json(user);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(error.status || 500).json({ error: error.message });
         }
     }
 
@@ -55,7 +55,7 @@ class UserView {
 
             res.json(updatedUser);
         } catch (error) {
-            res.status(error.status).json({ error: error.message });
+            res.status(error.status || 500).json({ error: error.message });
         }
     }
 
@@ -66,7 +66,7 @@ class UserView {
 
             res.status(204).send();
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(error.status || 500).json({ error: error.message });
         }
     }
 }
