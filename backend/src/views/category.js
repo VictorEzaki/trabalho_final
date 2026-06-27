@@ -1,20 +1,19 @@
 // req, res
 const CategoryController = require('../controllers/category');
+const HttpError = require('./../errors/HttpError');
 
 class CategoryView {
-    async getAll(req, res) {
+    async getAll(req, res, next) {
         try {
             const categories = await CategoryController.getAll();
 
             res.status(200).json(categories);
         } catch (error) {
-            res.status(error.status || 500).json({
-                error: error.message,
-            });
+            next(error);
         }
     }
 
-    async getById(req, res) {
+    async getById(req, res, next) {
         try {
             const { id } = req.params;
 
@@ -22,11 +21,11 @@ class CategoryView {
 
             res.status(200).json(category);
         } catch (error) {
-            res.status(error.status || 500).json({ message: error.message });
+            next(error);
         }
     }
 
-    async create(req, res) {
+    async create(req, res, next) {
         try {
             const { name, description } = req.body;
 
@@ -34,13 +33,11 @@ class CategoryView {
 
             res.status(201).json(category);
         } catch (error) {
-            res.status(error.status || 500).json({
-                error: error.message,
-            });
+            next(error)
         }
     }
 
-    async update(req, res) {
+    async update(req, res, next) {
         try {
             const { name, description } = req.body;
             const { id } = req.params;
@@ -49,13 +46,11 @@ class CategoryView {
 
             res.status(200).json(category);
         } catch (error) {
-            res.status(error.status || 500).json({
-                error: error.message,
-            });
+            next(error)
         }
     }
 
-    async delete(req, res) {
+    async delete(req, res, next) {
         try {
             const { id } = req.params;
 
@@ -63,9 +58,7 @@ class CategoryView {
 
             res.status(204).send();
         } catch (error) {
-            res.status(error.status || 400).json({
-                error: error.message,
-            });
+            next(error)
         }
     }
 }
