@@ -210,25 +210,19 @@ class ExpenseController {
     async getTotalExpenses(userId) {
         const totalExpense = await ExpenseModel.getTotalExpenses(userId);
         
-        return {
-            total: totalExpense
-        };
+        return totalExpense;
     }
     
     async getQuantidadeExpenses(userId) {
         const quantidadeExpenses = await ExpenseModel.getQuantidadeExpenses(userId);
         
-        return {
-            total: quantidadeExpenses
-        };
+        return quantidadeExpenses;
     }
     
     async getTotalExpensesByCategory(userId) {
         const totalbyCategory = await ExpenseModel.getTotalExpensesByCategory(userId);
         
-        return {
-            total: totalbyCategory
-        };
+        return totalbyCategory;
     }
 }
 
