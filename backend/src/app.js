@@ -3,6 +3,10 @@ const cors = require('cors');
 const app = express();
 const errorHandlerMiddleware = require('./middlewares/errorHandler.js');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 const sequelize = require('./models/database.js');
 require('./models/associations');
 
