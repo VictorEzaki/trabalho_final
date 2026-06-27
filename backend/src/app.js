@@ -1,14 +1,14 @@
 const express = require("express");
 const cors = require('cors');
 const app = express();
-const errorHandlerMiddleware = require('./middleware/errorHandler.js');
+const errorHandlerMiddleware = require('./middlewares/errorHandler.js');
 
 const sequelize = require('./models/database.js');
 require('./models/associations');
 
-const ExpenseRouter = require('./router/expense.js');
-const UserRouter = require('./router/user.js');
-const CategoryRouter = require('./router/category.js');
+const ExpenseRouter = require('./routes/expense.js');
+const UserRouter = require('./routes/user.js');
+const CategoryRouter = require('./routes/category.js');
 
 app.use(cors());
 app.use(express.json());

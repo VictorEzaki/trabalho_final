@@ -1,9 +1,9 @@
 const express = require('express');
 
 const router = express.Router();
-const ExpenseView = require('./../views/expense');
+const ExpenseView = require('../views/expense');
 
-const authMiddleware = require('./../middleware/auth');
+const authMiddleware = require('../middlewares/auth');
 
 router.post("/expenses", authMiddleware, ExpenseView.create);
 router.get("/expenses", authMiddleware, ExpenseView.getAll);
