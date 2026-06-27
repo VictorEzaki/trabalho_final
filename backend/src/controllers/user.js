@@ -131,13 +131,10 @@ class UserController {
             throw new HttpError(409, 'Já existe um usuário cadastrado com este email.');
         }
         
-        const user = await UserModel.updateUser(id, email, password, name);
-        const userJson = user.toJSON();
+        const hashPassword = await bcrypt.hash(password, 10);
+        const user = await UserModel.updateUser(id, email, hashPassword, name);
         
-        return {
-            ...userJson,
-            password: this.replacePassword(userJson.password)
-        };
+        return this.mapUser(user);
     }
     
     async delete(id) {
