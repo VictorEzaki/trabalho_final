@@ -1,9 +1,9 @@
 const express = require('express');
 
 const router = express.Router();
-const CategoryView = require('./../views/category');
+const CategoryView = require('../views/category');
 
-const authMiddleware = require('./../middlewares/auth');
+const authMiddleware = require('../middlewares/auth');
 
 router.post("/categories", authMiddleware, CategoryView.create);
 router.get("/categories", authMiddleware, CategoryView.getAll);
