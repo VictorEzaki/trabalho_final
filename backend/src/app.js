@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require('cors');
 const app = express();
-const errorHandlerMiddleware = require('./middleware/errorHandler.js');
+const errorHandlerMiddleware = require('./middlewares/errorHandler.js');
 
 const sequelize = require('./models/database.js');
 require('./models/associations');
