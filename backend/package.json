@@ -16,7 +16,9 @@
   "main": "./src/app.js",
   "scripts": {
     "dev": "node ./src/app.js",
-    "watch": "nodemon ./src/app.js"
+    "watch": "nodemon ./src/app.js",
+    "db:create": "sequelize-cli db:create",
+    "migrate": "sequelize-cli db:migrate"
   },
   "dependencies": {
     "cors": "^2.8.6",

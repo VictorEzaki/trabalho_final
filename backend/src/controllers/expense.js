@@ -4,13 +4,6 @@ const ExpenseModel = require('../models/expense');
 
 class ExpenseController {
     async getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status) {
-        categoryId = categoryId ?? '';
-        dateIni    = dateIni ?? '';
-        dateFim    = dateFim ?? '';
-        vlMin      = vlMin ?? '';
-        vlMax      = vlMax ?? '';
-        status     = status ?? '';
-        
         let expenses = await ExpenseModel.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status);
         
         return expenses;

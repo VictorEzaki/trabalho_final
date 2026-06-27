@@ -54,12 +54,45 @@ class ExpenseModel {
     constructor() { }
     
     async getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status) {
+        const where = {};
+        
+        // filtrar categoria
+        if (categoryId) {
+            where.categoryId = categoryId;
+        }
+        
+        // filtrar status
+        if (status) {
+            where.status = status;
+        }
+        
+        // filtrar período
+        if (dateIni && dateFim) {
+            where.date = {
+                [Op.between]: [dateIni, dateFim]
+            };
+        }
+        
+        // valor mínimo
+        if (vlMin) {
+            where.amount = {
+                ...where.amount,
+                [Op.gte]: vlMin
+            };
+        }
+        
+        // valor máximo
+        if (vlMax) {
+            where.amount = {
+                ...where.amount,
+                [Op.lte]: vlMax
+            };
+        }
+
         return db.findAll({
-            where: {
-                categoryId,
-                date: { [Op.between]: [dateIni, dateFim]}
-            }
-        });
+        where
+    });
+
     }
     
     async getById(id) {
