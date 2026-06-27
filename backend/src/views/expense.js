@@ -4,9 +4,9 @@ const ExpenseController = require('../controllers/expense');
 class ExpenseView {
     async getAll(req, res) {
         try {
-            let { category, date } = req.query;
+            let { categoryId, dateIni, dateFim, vlMin, vlMax, status } = req.query;
 
-            const expenses = await ExpenseController.getAll(category, date);
+            const expenses = await ExpenseController.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status);
 
             res.status(200).json(expenses);
         } catch (error) {
@@ -30,9 +30,9 @@ class ExpenseView {
 
     async create(req, res) {
         try {
-            const { title, amount, categoryId, date, description } = req.body;
+            const { amount, date, description, status, categoryId, userId } = req.body;
 
-            const expense = await ExpenseController.create(title, amount, categoryId, date, description);
+            const expense = await ExpenseController.create(amount, date, description, status, categoryId, userId);
 
             res.status(201).json(expense);
         } catch (error) {
@@ -44,10 +44,10 @@ class ExpenseView {
 
     async update(req, res) {
         try {
-            const { title, amount, categoryId, date, description } = req.body;
+            const { amount, date, description, status, categoryId, userId } = req.body;
             const { id } = req.params;
 
-            const expense = await ExpenseController.update(title, amount, categoryId, date, description, Number(id));
+            const expense = await ExpenseController.update(amount, date, description, status, categoryId, userId, Number(id));
 
             res.status(200).json(expense);
         } catch (error) {
@@ -73,7 +73,9 @@ class ExpenseView {
 
     async getTotalExpenses(req, res) {
         try {
-            const totalExpenses = await ExpenseController.getTotalExpenses();
+            const { userId } = req.params;
+
+            const totalExpenses = await ExpenseController.getTotalExpenses(userId);
 
             res.status(200).json(totalExpenses);
         } catch (error) {
@@ -83,9 +85,25 @@ class ExpenseView {
         }
     }
 
+    async getQuantidadeExpenses(req, res) {
+        try {
+            const { userId } = req.params;
+
+            const quantidadeExpenses = await ExpenseController.getQuantidadeExpenses(userId);
+
+            res.status(200).json(quantidadeExpenses);
+        } catch (error) {
+            res.status(400).json({
+                error: error.message,
+            });
+        }
+    }
+
     async getTotalExpensesByCategory(req, res) {
         try {
-            const totalExpensesByCategory = await ExpenseController.getTotalExpensesByCategory();
+            const { userId } = req.params;
+
+            const totalExpensesByCategory = await ExpenseController.getTotalExpensesByCategory(userId);
 
             res.status(200).json(totalExpensesByCategory);
         } catch (error) {

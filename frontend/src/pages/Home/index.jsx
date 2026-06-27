@@ -1,8 +1,44 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ApexCharts from "apexcharts";
+import Notification from "../../components/Notification"
 
 function Home() {
   const chartRef = useRef(null);
+
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState(() => {
+      const flashMessage = sessionStorage.getItem("flashMessage");
+  
+      if (!flashMessage) {
+        return {
+          message: "",
+          type: "error",
+        };
+      }
+  
+      try {
+        const parsedMessage = JSON.parse(flashMessage);
+  
+        if (parsedMessage.message) {
+          return {
+            message: parsedMessage.message,
+            type: parsedMessage.type || "success",
+          };
+        }
+      } catch {
+        return {
+          message: flashMessage,
+          type: "success",
+        };
+      } finally {
+        sessionStorage.removeItem("flashMessage");
+      }
+  
+      return {
+        message: "",
+        type: "error",
+      };
+    });
 
   useEffect(() => {
     const options = {
@@ -21,7 +57,14 @@ function Home() {
     };
   }, []);
 
-  return <div ref={chartRef}></div>;
+  return <>
+    <Notification
+      message={notification.message}
+      type={notification.type}
+      onClose={() => setNotification({ message: "", type: notification.type })}
+    />
+    <div ref={chartRef}></div>;
+  </>
 }
 
 export default Home;

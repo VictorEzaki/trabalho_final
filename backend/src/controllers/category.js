@@ -29,7 +29,7 @@ class CategoryController {
         return category;
     }
     
-    async create(description) {
+    async create(name, description) {
         // verifica se foi enviado com o tipo correto(string)
         if (description !== undefined && typeof description !== "string") {
             const error = new Error("Descrição de categoria ausente ou inválido.");
@@ -37,7 +37,7 @@ class CategoryController {
             throw error;
         }
         
-        const categoryCreated = await CategoryModel.create(description)
+        const categoryCreated = await CategoryModel.create(name, description)
         
         if (!categoryCreated) {
             const error = new Error('Erro ao criar categoria.');
@@ -48,7 +48,7 @@ class CategoryController {
         return categoryCreated;
     }
     
-    async update(description, id) {
+    async update(name, description, id) {
         // validações da regra de negócio
         // ID é obrigatório para edição
         if (!id) {
@@ -78,7 +78,7 @@ class CategoryController {
             throw error;
         }
         
-        const categoryUpdated = await CategoryModel.update(description, id);
+        const categoryUpdated = await CategoryModel.update(name, description, id);
         if (!categoryUpdated) {
             const error = new Error('Ocorreu um erro ao editar a categoria!');
             error.status = 500;

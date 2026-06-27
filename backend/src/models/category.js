@@ -7,6 +7,10 @@ const db = sequelize.define('categories', {
         primaryKey: true,
         autoIncrement: true 
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     description: {
         type: DataTypes.STRING,
         allowNull: false
@@ -26,17 +30,18 @@ class CategoryModel {
         });
     }
     
-    async create(description) {
-        return db.create({description})
+    async create(name, description) {
+        return db.create({name, description})
     }
     
-    async update(description, id) {
+    async update(name, description, id) {
         const category = await db.findByPk(id);
         
         if (!category) {
             return null;
         }
         
+        category.name = name;
         category.description = description;
         
         await category.save();

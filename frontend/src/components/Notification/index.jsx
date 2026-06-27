@@ -9,7 +9,7 @@ function Notification({ message, type = "success", onClose }) {
 
     const timer = setTimeout(() => {
       onClose();
-    }, 5000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, [message, onClose]);

@@ -3,24 +3,15 @@ const CategoryModel = require('../models/category');
 const ExpenseModel = require('../models/expense');
 
 class ExpenseController {
-    async getAll(category, date) {
-        let expenses = await ExpenseModel.getAll();
+    async getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status) {
+        categoryId = categoryId ?? '';
+        dateIni    = dateIni ?? '';
+        dateFim    = dateFim ?? '';
+        vlMin      = vlMin ?? '';
+        vlMax      = vlMax ?? '';
+        status     = status ?? '';
         
-        if (category) {
-            expenses = expenses.filter(
-                (expense) => expense.category.toLowerCase() === category.toLowerCase(),
-            );
-        }
-        
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-        if (date !== undefined && !dateRegex.test(date)) {
-            const error = new Error('Formato de data inválido. Use YYYY-MM-DD.');
-            error.status = 400;
-            throw error;
-        }
-        if (date) {
-            expenses = expenses.filter((expense) => expense.date === date);
-        }
+        let expenses = await ExpenseModel.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status);
         
         return expenses;
     }
@@ -48,14 +39,8 @@ class ExpenseController {
         return expense;
     }
     
-    async create(title, amount, categoryId, date, description) {
+    async create(amount, date, description, status, categoryId, userId) {
         // validações da regra de negócio
-        // O campo title é obrigatório
-        if (!title) {
-            const error = new Error('Título de despesa é um campo obrigatório.');
-            error.status = 400;
-            throw error;
-        }
         // * O campo amount deve ser maior que zero
         if (amount !== undefined && amount < 0) {
             const error = new Error('Valor da despesa não pode ser menor que zero.');
@@ -76,12 +61,6 @@ class ExpenseController {
         }
         
         // Validações extras para tratamento
-        // verifica se o title foi enviado ou se está com o tipo correto
-        if (title !== undefined && typeof title !== "string") {
-            const error = new Error("Título de despesa inválido.")
-            error.status = 400;
-            throw error;
-        }
         
         // verifica se amount é number caso tenha sido enviado
         if (amount !== undefined && typeof amount !== "number") {
@@ -110,7 +89,7 @@ class ExpenseController {
             throw error;
         }
         
-        const expenseCreated = await ExpenseModel.create(title, amount, categoryId, date, description)
+        const expenseCreated = await ExpenseModel.create(amount, date, description, status, categoryId, userId)
         
         if (!expenseCreated) {
             const error = new Error('Erro ao criar despesa');
@@ -121,7 +100,7 @@ class ExpenseController {
         return expenseCreated;
     }
     
-    async update(title, amount, categoryId, date, description, id) {
+    async update(amount, date, description, status, categoryId, userId, id) {
         // validações da regra de negócio
         // ID é obrigatório para edição
         if (!id) {
@@ -133,13 +112,6 @@ class ExpenseController {
         // verifica se ID é maior que zero
         if (id < 1) {
             const error = new Error('ID não pode ser menor que 1.')
-            error.status = 400;
-            throw error;
-        }
-        
-        // O campo title é obrigatório
-        if (!title) {
-            const error = new Error('Título de despesa é um campo obrigatório.')
             error.status = 400;
             throw error;
         }
@@ -164,12 +136,6 @@ class ExpenseController {
         }
         
         // validações extras para tratamento
-        // verifica se o title foi enviado ou se está com o tipo correto
-        if (title !== undefined && typeof title !== "string") {
-            const error = new Error("Título de despesa inválido.");
-            error.status = 400;
-            throw error;
-        }
         
         // verifica se amount é number caso tenha sido enviado
         if (amount !== undefined && typeof amount !== "number") {
@@ -213,7 +179,7 @@ class ExpenseController {
             throw error;
         }
         
-        const expenseUpdated = await ExpenseModel.update(title, amount, categoryId, date, description, id);
+        const expenseUpdated = await ExpenseModel.update(amount, date, description, status, categoryId, userId, id);
         if (!expenseUpdated) {
             const error = new Error('Ocorreu um erro ao editar a despesa!');
             error.status = 500;
@@ -248,24 +214,28 @@ class ExpenseController {
         return ExpenseModel.delete(Number(id));
     }
     
-    async getTotalExpenses() {
-        const expenses = await this.getAll();
-        
-        const totalExpense = expenses.reduce((acc, expense) => {
-            return acc + (Number(expense.amount) || 0);
-        }, 0);
+    async getTotalExpenses(userId) {
+        const totalExpense = await ExpenseModel.getTotalExpenses(userId);
         
         return {
             total: totalExpense
         };
     }
-
-    async getTotalExpenses() {
-        return await ExpenseModel.getTotalExpenses();
+    
+    async getQuantidadeExpenses(userId) {
+        const quantidadeExpenses = await ExpenseModel.getQuantidadeExpenses(userId);
+        
+        return {
+            total: quantidadeExpenses
+        };
     }
     
-    async getTotalExpensesByCategory() {
-        return await ExpenseModel.getTotalExpensesByCategory();
+    async getTotalExpensesByCategory(userId) {
+        const totalbyCategory = await ExpenseModel.getTotalExpensesByCategory(userId);
+        
+        return {
+            total: totalbyCategory
+        };
     }
 }
 
