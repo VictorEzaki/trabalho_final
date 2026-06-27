@@ -1,5 +1,6 @@
 const UserModel = require('../models/user');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const authConfig = require('../config/auth');
 
 class UserController {
@@ -65,8 +66,10 @@ class UserController {
             error.status = 409;
             throw error;
         }
+
+        const hashPassword = await bcrypt.hash(password, 10);
         
-        const user = await UserModel.createUser(email, password, name);
+        const user = await UserModel.createUser(email, hashPassword, name);
         
         const userJson = user.toJSON();
         
@@ -81,7 +84,14 @@ class UserController {
         }
         
         const user = await UserModel.getUserByEmail(email);
-        if (!user || user.password !== password) {
+        if (!user) {
+            const error = new Error('Credenciais inválidas.');
+            error.status = 400;
+            throw error;
+        }
+
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
             const error = new Error('Credenciais inválidas.');
             error.status = 400;
             throw error;
