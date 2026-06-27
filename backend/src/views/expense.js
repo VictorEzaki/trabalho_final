@@ -4,7 +4,7 @@ const ExpenseController = require('../controllers/expense');
 class ExpenseView {
     async getAll(req, res) {
         try {
-            let { categoryId, dateIni, dateFim, vlMin, vlMax, status } = req.query;
+            const { categoryId, dateIni, dateFim, vlMin, vlMax, status } = req.query;
 
             const expenses = await ExpenseController.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status);
 
