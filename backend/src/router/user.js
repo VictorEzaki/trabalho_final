@@ -5,7 +5,7 @@ const UserView = require('./../views/user');
 const authMiddleware = require('./../middleware/auth');
 
 router.post("/users", UserView.create);
-router.post("/users/login", UserView.login);
+router.post("/auth/login", UserView.login);
 
 router.get("/users", authMiddleware, UserView.getAll);
 router.get("/users/:id", authMiddleware, UserView.getById);

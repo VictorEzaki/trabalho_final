@@ -10,7 +10,7 @@ class ExpenseView {
 
             res.status(200).json(expenses);
         } catch (error) {
-            res.status(error.status).json({
+            res.status(error.status || 500).json({
                 error: error.message,
             });
         }
@@ -24,7 +24,7 @@ class ExpenseView {
 
             res.status(200).json(expense);
         } catch (error) {
-            res.status(error.status).json({ message: error.message });
+            res.status(error.status || 500).json({ message: error.message });
         }
     }
 
@@ -65,7 +65,7 @@ class ExpenseView {
 
             res.status(204).send();
         } catch (error) {
-            res.status(400).json({
+            res.status(error.status || 500).json({
                 error: error.message,
             });
         }
@@ -79,7 +79,7 @@ class ExpenseView {
 
             res.status(200).json(totalExpenses);
         } catch (error) {
-            res.status(400).json({
+            res.status(error.status || 500).json({
                 error: error.message,
             });
         }
@@ -93,7 +93,7 @@ class ExpenseView {
 
             res.status(200).json(quantidadeExpenses);
         } catch (error) {
-            res.status(400).json({
+            res.status(error.status || 500).json({
                 error: error.message,
             });
         }
@@ -107,7 +107,7 @@ class ExpenseView {
 
             res.status(200).json(totalExpensesByCategory);
         } catch (error) {
-            res.status(400).json({
+            res.status(error.status || 500).json({
                 error: error.message,
             });
         }

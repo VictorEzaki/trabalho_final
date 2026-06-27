@@ -85,7 +85,7 @@ class ExpenseController {
         const expenseCreated = await ExpenseModel.create(amount, date, description, status, categoryId, userId)
         
         if (!expenseCreated) {
-            const error = new Error('Erro ao criar despesa');
+            const error = new Error('Erro ao criar despesa.');
             error.status = 500;
             throw error;
         }
