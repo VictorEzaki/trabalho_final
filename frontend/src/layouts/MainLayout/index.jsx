@@ -1,8 +1,8 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "./../../contexts/AuthContext";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import SidebarNav from "./../../components/SideBarNav";
 import "./index.css";
 
@@ -10,19 +10,35 @@ function MainLayout() {
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   function handleLogout() {
     logout();
     navigate("/login");
   }
 
+  function toggleSidebar() {
+    setIsSidebarOpen((prev) => !prev);
+  }
+
   return (
     <div className="main-layout">
-      <aside className="sidebar">
+      <aside className={`sidebar ${isSidebarOpen ? "open" : "closed"}`}>
         <div className="header-sidebar">
-          <h2>FinanceApp</h2>
-          <FontAwesomeIcon icon={faBars} />
+          <h2 className="logo">FinanceApp</h2>
+
+          <button
+            type="button"
+            className="menu-btn"
+            onClick={toggleSidebar}
+            aria-label={isSidebarOpen ? "Fechar menu lateral" : "Abrir menu lateral"}
+            aria-expanded={isSidebarOpen}
+          >
+            <FontAwesomeIcon icon={faBars} />
+          </button>
         </div>
-        <SidebarNav />
+
+        <SidebarNav isOpen={isSidebarOpen} />
       </aside>
 
       <main className="main-layout-content">
