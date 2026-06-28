@@ -6,6 +6,7 @@ const CategoryView = require('../views/category');
 const authMiddleware = require('../middlewares/auth');
 
 router.post("/categories", authMiddleware, CategoryView.create);
+
 /**
  * @swagger
  * /categories:
