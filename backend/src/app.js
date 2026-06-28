@@ -3,6 +3,10 @@ const cors = require('cors');
 const app = express();
 const errorHandlerMiddleware = require('./middlewares/errorHandler.js');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 const sequelize = require('./models/database.js');
 require('./models/associations');
 
@@ -25,7 +29,7 @@ async function main() {
     await sequelize.authenticate();
     console.log('Autenticação com sucesso!');
     
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     console.log('Sincronização com banco de dados realizada.');
     console.log('Conexão com o banco de dados estabelecida com sucesso.');
     

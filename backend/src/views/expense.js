@@ -66,7 +66,7 @@ class ExpenseView {
     
     async getTotalExpenses(req, res, next) {
         try {
-            const { userId } = req.params;
+            const userId = req.user.id;
             
             const totalExpenses = await ExpenseController.getTotalExpenses(userId);
             
@@ -78,7 +78,7 @@ class ExpenseView {
     
     async getQuantidadeExpenses(req, res, next) {
         try {
-            const { userId } = req.params;
+            const userId  = req.user.id;
             
             const quantidadeExpenses = await ExpenseController.getQuantidadeExpenses(userId);
             
@@ -90,7 +90,7 @@ class ExpenseView {
     
     async getTotalExpensesByCategory(req, res, next) {
         try {
-            const { userId } = req.params;
+            const userId = req.user.id;
             
             const totalExpensesByCategory = await ExpenseController.getTotalExpensesByCategory(userId);
             
