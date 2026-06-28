@@ -10,7 +10,7 @@ class UserView {
             const { email, password } = req.body;
 
             const auth = await UserController.login(email, password);
-            return res.json(auth);
+            res.status(200).json(auth);
         } catch (error) {
             next(error)
         }
@@ -19,7 +19,7 @@ class UserView {
     async getAll(req, res, next) {
         try {
             const users = await UserController.getAll();
-            res.json(users);
+            res.status(200).json(users);
         } catch (error) {
             next(error)
         }
@@ -41,7 +41,7 @@ class UserView {
             const id = Number(req.params.id);
             const user = await UserController.getById(id);
 
-            res.json(user);
+            res.status(200).json(user);
         } catch (error) {
             next(error)
         }
@@ -54,7 +54,7 @@ class UserView {
 
             const updatedUser = await UserController.update(id, email, password, name);
 
-            res.json(updatedUser);
+            res.status(200).json(updatedUser);
         } catch (error) {
             next(error)
         }
