@@ -1,27 +1,62 @@
-import { useEffect, useRef } from "react";
-import ApexCharts from "apexcharts";
+import React, { useState, useEffect } from "react";
+import Chart from "react-apexcharts";
+import { dashboardService } from "../../../services/dashboardService.js";
 
 function SummaryCategory() {
-  const chartRef = useRef(null);
-
+  const [expenses, setExpenses] = useState([]);
+  
   useEffect(() => {
-    const options = {
-      series: [44, 55, 41, 17, 15],
-      labels: ["Alimentação", "Transporte", "Lazer", "Saúde", "Outros"],
-      chart: {
-        type: "donut",
-      },
-    };
-
-    const chart = new ApexCharts(chartRef.current, options);
-    chart.render();
-
-    return () => {
-      chart.destroy();
-    };
+    async function loadExpenses() {
+      try {
+        const data = await dashboardService.summaryCategory();
+        setExpenses(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    
+    loadExpenses();
   }, []);
-
-  return <div ref={chartRef}></div>;
+  
+  function generateColors(count) {
+    return Array.from({ length: count }, (_, index) => {
+      const hue = (index * 360) / count;
+      return `hsl(${hue}, 70%, 55%)`;
+    });
+  }
+  
+  const categories = expenses.map((item) => item.categoria);
+  
+  const series = [
+    {
+      name: "Total gasto",
+      data: expenses.map((item) => item.total),
+    },
+  ];
+  
+  const options = {
+    plotOptions: {
+      bar: {
+        distributed: true,
+        borderRadius: 6,
+      },
+    },
+    
+    xaxis: {
+      categories: expenses.map((item) => item.categoria),
+    },
+    
+    colors: generateColors(expenses.length),
+  };
+  
+  return (
+    <Chart
+    options={options}
+    series={series}
+    type="bar"
+    height={500}
+    />
+  );
 }
 
 export default SummaryCategory;

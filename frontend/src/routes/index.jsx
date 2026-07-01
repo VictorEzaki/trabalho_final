@@ -3,7 +3,7 @@ import PrivateRoute from './privateRoute'
 
 import Login from './../pages/Auth/Login'
 import Register from './../pages/Auth/Register'
-import Home from './../pages/Home'
+import Dashboard from './../pages/Dashboard'
 import MainLayout from './../layouts/MainLayout'
 
 function AppRoutes() {
@@ -12,9 +12,9 @@ function AppRoutes() {
             <Route path='/' element={<Login />} />
             <Route path='/register' element={<Register />} />
             <Route element={ <MainLayout />}>
-                <Route path='/home' element={
+                <Route path='/dashboard' element={
                     <PrivateRoute>
-                        <Home />
+                        <Dashboard />
                     </PrivateRoute>
                 } />
             </Route>

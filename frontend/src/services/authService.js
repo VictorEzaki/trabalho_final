@@ -4,5 +4,5 @@ const unwrap = (response) => response.data;
 
 export const authService = {
     create: (payload) => api.post('/users', payload).then(unwrap),
-    login: (payload) => api.post(`/users/login`, payload).then(unwrap),
+    login: (payload) => api.post(`/auth/login`, payload).then(unwrap),
 }; 

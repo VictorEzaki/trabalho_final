@@ -74,7 +74,7 @@ function Login() {
       localStorage.setItem("user", JSON.stringify(data.user));
 
 
-      window.location.href = "/home";
+      window.location.href = "/dashboard";
     } catch (err) {
       setNotification({
         message: err.response?.data?.message || err.message || "Erro ao fazer login",
