@@ -267,10 +267,10 @@ router.put("/users/:id", authMiddleware, UserView.update);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *             examples:
- *               userIdObrigatorio:
- *                   $ref: '#/components/examples/UserIdObrigatorio'
- *               userIdValid:
- *                   $ref: '#/components/examples/UserIdValid'
+ *               IdObrigatorio:
+ *                   $ref: '#/components/examples/IdObrigatorio'
+ *               IdValid:
+ *                   $ref: '#/components/examples/IdValid'
  *          
  *       401:
  *         description: Erro de autorização

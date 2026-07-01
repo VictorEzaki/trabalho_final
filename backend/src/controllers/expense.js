@@ -29,12 +29,12 @@ class ExpenseController {
     
     async create(amount, date, description, status, categoryId, userId) {
         // validações da regra de negócio
-        // * O campo amount deve ser maior que zero
+        // O campo amount deve ser maior que zero
         if (amount !== undefined && amount < 0) {
             throw new HttpError(400, 'Valor da despesa não pode ser menor que zero.');
         }
         
-        // * O campo date não pode ser no futuro
+        // O campo date não pode ser no futuro
         if (date) {
             const dateAtual = new Date().toISOString().split('T')[0];
             const dateDespesa = new Date(date).toISOString().split('T')[0];

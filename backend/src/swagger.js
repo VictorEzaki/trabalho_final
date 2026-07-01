@@ -40,6 +40,28 @@ const swaggerDefinition = {
           password: { type: 'string', example: '123456' },
         },
       },
+      
+      Category: {
+        type: 'object',
+        properties: {
+          id: { type: 'integer', example: 1, readOnly: true },
+          name: { type: 'string', example: 'Lazer' },
+          description: { type: 'string', example: 'Despesas destinadas ao lazer' },
+        },  
+      },
+      
+      Expense: {
+        type: 'object',
+        properties: {
+          id: { type: 'integer', example: 1, readOnly: true },
+          description: { type: 'string', example: 'Almoço' },
+          amount: { type: 'double', example: 150.40 },
+          date: { type: 'date', example: '2026-02-10' },
+          status: { type: 'enum', example: 'PAGA' },
+          categoryId: { type: 'integer', example: 1 },
+          userId: { type: 'integer', example: 1 },
+        },
+      },
     },
     examples: {
       // Users
@@ -75,11 +97,13 @@ const swaggerDefinition = {
         summary: 'Campos obrigatórios',
         value: { message: 'Email e senha são obrigatórios' },
       },
-      UserIdObrigatorio: {
+
+      // IDs
+      IdObrigatorio: {
         summary: 'ID obrigatório',
         value: { message: 'ID é obrigatório' },
       },
-      UserIdValid: {
+      IdValid: {
         summary: 'ID válido',
         value: { message: 'ID não pode ser menor que 1' },
       },
@@ -96,6 +120,38 @@ const swaggerDefinition = {
       TokenMalFormated: {
         summary: 'Token mal formatado',
         value: { message: 'Token mal formatado' },
+      },
+      
+      // Expenses
+      ExpenseMenorQueZero: {
+        summary: 'Valor da despesa não pode ser menor que zero',
+        value: { message: 'Valor da despesa não pode ser menor que zero' },
+      },
+      validDate: {
+        summary: 'Data válida da despesa',
+        value: { message: 'A data da despesa não pode ser maior que atual' },
+      },
+      validValue: {
+        summary: 'Valor de despesa válido',
+        value: { message: 'Valor de despesa inválido' },
+      },
+      categoryRequired: {
+        summary: 'Obrigatoriedade do campo categoria',
+        value: { message: 'Categoria é um campo obrigatório' },
+      },
+      descriptionValid: {
+        summary: 'Tipo da descrição precisar estar correto',
+        value: { message: 'Descrição de despesa ausente ou inválido' },
+      },
+      FormatDateInvalid: {
+        summary: 'Formato da data da despesa inválido',
+        value: { message: 'Formato de data inválido. Use YYYY-MM-DD' },
+      },
+      
+      // Categories
+      DescriptionCateoryInvalid: {
+        summary: 'Descrição de categoria ausente ou inválido',
+        value: { message: 'Descrição de categoria ausente ou inválido' },
       },
     },
   },
