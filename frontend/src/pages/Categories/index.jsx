@@ -7,6 +7,7 @@ import "./index.css";
 function Categories() {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({ name: "", description: "" });
@@ -16,11 +17,15 @@ function Categories() {
   }, []);
 
   async function loadItems() {
+    setLoading(true);
+
     try {
       const data = await categoriesService.getAll();
       setItems(data || []);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -121,7 +126,13 @@ function Categories() {
             </tr>
           </thead>
           <tbody>
-            {filteredItems.length > 0 ? (
+            {loading ? (
+              <tr>
+                <td colSpan="3" className="empty-state">
+                  Carregando categorias...
+                </td>
+              </tr>
+            ) : filteredItems.length > 0 ? (
               filteredItems.map((item) => (
                 <tr key={item.id}>
                   <td>{item.name}</td>
