@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { expenseService } from "../../services/expenseService";
 import { categoriesService } from "../../services/categoriesService";
+import Notification from "../../components/Notification";
 import "./index.css";
 
 function Expenses() {
@@ -27,10 +28,44 @@ function Expenses() {
     categoryId: "",
   });
 
+  const [notification, setNotification] = useState(() => {
+    const flashMessage = sessionStorage.getItem("flashMessage");
+
+    if (!flashMessage) {
+      return {
+        message: "",
+        type: "error",
+      };
+    }
+
+    try {
+      const parsedMessage = JSON.parse(flashMessage);
+
+      if (parsedMessage.message) {
+        return {
+          message: parsedMessage.message,
+          type: parsedMessage.type || "success",
+        };
+      }
+    } catch {
+      return {
+        message: flashMessage,
+        type: "success",
+      };
+    } finally {
+      sessionStorage.removeItem("flashMessage");
+    }
+
+    return {
+      message: "",
+      type: "error",
+    };
+  });
+
   useEffect(() => {
     loadItems();
     loadCategories();
-  }, []);
+  }, [notification]);
 
   async function loadItems() {
     setLoading(true);
@@ -96,39 +131,53 @@ function Expenses() {
   }
 
   async function handleSubmit(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    try {
-      const payload = {
-        description: formData.description,
-        amount: Number(formData.amount),
-        date: formData.date,
-        status: formData.status,
-        categoryId: Number(formData.categoryId),
-        userId: currentUserId,
-      };
+  try {
+    const payload = {
+      description: formData.description,
+      amount: Number(formData.amount),
+      date: formData.date,
+      status: formData.status,
+      categoryId: Number(formData.categoryId),
+      userId: currentUserId,
+    };
 
-      if (editingItem) {
-        await expenseService.update(payload, editingItem.id);
-      } else {
-        await expenseService.create(payload);
-      }
-
-      await loadItems();
-      closeModal();
-    } catch (error) {
-      console.error(error);
+    if (editingItem) {
+      await expenseService.update(payload, editingItem.id);
+    } else {
+      await expenseService.create(payload);
     }
-  }
 
-  async function handleDelete(id) {
-    try {
-      await expenseService.delete(id);
-      await loadItems();
-    } catch (error) {
-      console.error(error);
-    }
+    await loadItems();
+    closeModal();
+
+    setNotification({
+      message: editingItem
+        ? "Despesa atualizada com sucesso!"
+        : "Despesa cadastrada com sucesso!",
+      type: "success",
+    });
+  } catch (error) {
+    setNotification({
+      message: error.response?.data?.message || error.message || "Erro ao salvar despesa",
+      type: "error",
+    });
   }
+}
+
+async function handleDelete(id) {
+  try {
+    await expenseService.delete(id);
+    await loadItems();
+    setNotification({ message: "Despesa excluída com sucesso!", type: "success" });
+  } catch (error) {
+    setNotification({
+      message: error.response?.data?.message || error.message || "Erro ao excluir despesa",
+      type: "error",
+    });
+  }
+}
 
   const filteredItems = items.filter((item) => {
     const searchText = `${item.description || ""} ${item.amount || ""} ${item.date || ""} ${item.status || ""}`.toLowerCase();
@@ -137,6 +186,12 @@ function Expenses() {
 
   return (
     <div className="page-shell">
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        onClose={() => setNotification({ message: "", type: notification.type })}
+      />
+
       <div className="page-header">
         <h1>Despesas</h1>
       </div>
@@ -165,7 +220,6 @@ function Expenses() {
               <th>Data</th>
               <th>Status</th>
               <th>Categoria</th>
-              <th>Usuário</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -184,7 +238,6 @@ function Expenses() {
                   <td>{item.date}</td>
                   <td>{item.status}</td>
                   <td>{categories.find((category) => category.id === item.categoryId)?.name || item.categoryId}</td>
-                  <td>{item.userId}</td>
                   <td>
                     <div className="table-actions">
                       <button type="button" className="icon-button edit" onClick={() => openEditModal(item)}>

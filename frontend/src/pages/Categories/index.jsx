@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { categoriesService } from "../../services/categoriesService";
+import Notification from "../../components/Notification";
 import "./index.css";
 
 function Categories() {
@@ -11,6 +12,40 @@ function Categories() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({ name: "", description: "" });
+
+  const [notification, setNotification] = useState(() => {
+    const flashMessage = sessionStorage.getItem("flashMessage");
+
+    if (!flashMessage) {
+      return {
+        message: "",
+        type: "error",
+      };
+    }
+
+    try {
+      const parsedMessage = JSON.parse(flashMessage);
+
+      if (parsedMessage.message) {
+        return {
+          message: parsedMessage.message,
+          type: parsedMessage.type || "success",
+        };
+      }
+    } catch {
+      return {
+        message: flashMessage,
+        type: "success",
+      };
+    } finally {
+      sessionStorage.removeItem("flashMessage");
+    }
+
+    return {
+      message: "",
+      type: "error",
+    };
+  });
 
   useEffect(() => {
     loadItems();
@@ -76,8 +111,18 @@ function Categories() {
 
       await loadItems();
       closeModal();
+
+      setNotification({
+        message: editingItem
+          ? "Categoria atualizada com sucesso!"
+          : "Categoria cadastrada com sucesso!",
+        type: "success",
+      });
     } catch (error) {
-      console.error(error);
+      setNotification({
+        message: error.response?.data?.message || error.message || "Erro ao salvar categoria",
+        type: "error",
+      });
     }
   }
 
@@ -97,6 +142,12 @@ function Categories() {
 
   return (
     <div className="page-shell">
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        onClose={() => setNotification({ message: "", type: notification.type })}
+      />
+
       <div className="page-header">
         <h1>Categorias</h1>
       </div>
