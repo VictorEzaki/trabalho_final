@@ -30,8 +30,8 @@ class UserModel {
         return db.findAll();
     }
     
-    async createUser(email, password, name) {
-        return db.create({ email, password, name });
+    async createUser(email, password, name, transaction) {
+        return db.create({ email, password, name }, { transaction });
     }
     
     async getUserByEmail(email) {
@@ -42,7 +42,7 @@ class UserModel {
         return db.findByPk(id);
     }
     
-    async updateUser(id, email, password, name) {
+    async updateUser(id, email, password, name, transaction) {
         const user = await db.findByPk(id);
         
         if (!user) {
@@ -53,15 +53,15 @@ class UserModel {
         user.password = password;
         user.name = name;
         
-        await user.save();
+        await user.save({transaction});
         
         return user;
     }
     
-    async deleteUser(id) {
+    async deleteUser(id, transaction) {
         return db.destroy({
             where: { id }
-        });
+        }, {transaction: transaction});
     }
     
 }

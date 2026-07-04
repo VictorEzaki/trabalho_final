@@ -28,7 +28,7 @@ class UserController {
         return users;
     }
     
-    async create(email, password, name) {
+    async create(email, password, name, transaction) {
         if (!email) {
             throw new HttpError(400, 'Email é um campo obrigatório.');
         }
@@ -56,7 +56,7 @@ class UserController {
 
         const hashPassword = await bcrypt.hash(password, 10);
         
-        const user = await UserModel.createUser(email, hashPassword, name);
+        const user = await UserModel.createUser(email, hashPassword, name, transaction);
         
         const userJson = user.toJSON();
         
@@ -100,7 +100,7 @@ class UserController {
         return this.mapUser(user);
     }
     
-    async update(id, email, password, name) {
+    async update(id, email, password, name, transaction) {
         if (!email) {
             throw new HttpError(400, 'Email é um campo obrigatório.');
         }
@@ -132,12 +132,12 @@ class UserController {
         }
         
         const hashPassword = await bcrypt.hash(password, 10);
-        const user = await UserModel.updateUser(id, email, hashPassword, name);
+        const user = await UserModel.updateUser(id, email, hashPassword, name, transaction);
         
         return this.mapUser(user);
     }
     
-    async delete(id) {
+    async delete(id, transaction) {
         // ID é obrigatório para edição
         if (!id) {
             throw new HttpError(400, 'ID é obrigatório.');
@@ -153,7 +153,7 @@ class UserController {
             throw new HttpError(404, 'Usuário não encontrado.');
         }
         
-        return await UserModel.deleteUser(id);
+        return await UserModel.deleteUser(id, transaction);
     }
 }
 
