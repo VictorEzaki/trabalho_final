@@ -53,9 +53,14 @@ const db = sequelize.define('expenses', {
 class ExpenseModel {
     constructor() { }
     
-    async getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status) {
+    async getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status, userId) {
         const where = {};
         
+        // filtrar por usuário
+        if (userId) {
+            where.userId = userId;
+        }
+
         // filtrar categoria
         if (categoryId) {
             where.categoryId = categoryId;
