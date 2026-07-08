@@ -30,7 +30,9 @@ function Expenses() {
 
   const [formFilter, setFormFilter] = useState({
     dateInicial: "",
-    dateFinal: ""
+    dateFinal: "",
+    valueMin: "",
+    valueMax: "",
   }); 
 
   const [notification, setNotification] = useState(() => {
@@ -222,45 +224,71 @@ function Expenses() {
       </div>
 
       <div className="page-actions">
-        <div>
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Pesquisar despesa..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
+  <div className="filters">
+    <input
+      type="text"
+      className="search-input"
+      placeholder="Pesquisar despesa..."
+      value={search}
+      onChange={(event) => setSearch(event.target.value)}
+    />
 
-          <form onSubmit={handleSearch}>
-            <span id="filter-periodo">
-              <input
-                type="date"
-                className="periodo"
-                id="periodo-inicial"
-                value={formFilter.dateInicial}
-                onChange={handleChangeFilter}
-              />
-              
-              <span>-</span>
+    <form className="filter-form" onSubmit={handleSearch}>
+      <span class="filters-group">
+        <input
+          type="date"
+          name="dateInicial"
+          className="search-input periodo"
+          value={formFilter.dateInicial}
+          onChange={handleChangeFilter}
+        />
 
-              <input
-                type="date"
-                className="periodo"
-                id="periodo-final"
-                value={formFilter.dateFinal}
-                onChange={handleChangeFilter}
-              />
-            </span>
+        <span>até</span>
 
-            <button type="submit">Buscar</button>
-          </form>
-        </div>
+        <input
+          type="date"
+          name="dateFinal"
+          className="search-input periodo"
+          value={formFilter.dateFinal}
+          onChange={handleChangeFilter}
+        />
+      </span>
 
-        <button type="button" className="primary-button" onClick={openCreateModal}>
-          <FontAwesomeIcon icon={faPlus} />
-          <span>Nova Despesa</span>
-        </button>
-      </div>
+      <span class="filters-group">
+        <input
+          type="number"
+          name="valueMin"
+          className="search-input value"
+          placeholder="Valor mínimo"
+          value={formFilter.valueMin}
+          onChange={handleChangeFilter}
+        />
+
+        <span>-</span>
+
+        <input
+          type="number"
+          name="valueMax"
+          className="search-input value"
+          placeholder="Valor máximo"
+          value={formFilter.valueMax}
+          onChange={handleChangeFilter}
+        />
+      </span>
+
+      <button type="submit">Buscar</button>
+    </form>
+  </div>
+
+  <button
+    type="button"
+    className="primary-button"
+    onClick={openCreateModal}
+  >
+    <FontAwesomeIcon icon={faPlus} />
+    <span>Nova Despesa</span>
+  </button>
+</div>
 
       <div className="table-wrapper">
         <table className="data-table">

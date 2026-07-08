@@ -3,7 +3,15 @@ import api from './api';
 const unwrap = (response) => response.data;
 
 export const expenseService = {
-    getAll: (params) => api.get(`/expenses?dateIni=${params.dateInicial}&dateFim=${params.dateFinal}`).then(unwrap),
+    getAll: (params = {}) =>
+        api.get("/expenses", {
+        params: {
+            dateIni: params.dateInicial,
+            dateFim: params.dateFinal,
+            vlMin: params.valueMin,
+            vlMax: params.valueMax,
+        },
+    }).then(unwrap),
     create: (payload) => api.post('/expenses', payload).then(unwrap),
     getById: (id) => api.get(`/expenses/${id}`).then(unwrap),
     update: (payload, id) => api.put(`/expenses/${id}`, payload).then(unwrap),
