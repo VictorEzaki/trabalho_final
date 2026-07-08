@@ -28,6 +28,11 @@ function Expenses() {
     categoryId: "",
   });
 
+  const [formFilter, setFormFilter] = useState({
+    dateInicial: "",
+    dateFinal: ""
+  }); 
+
   const [notification, setNotification] = useState(() => {
     const flashMessage = sessionStorage.getItem("flashMessage");
 
@@ -67,11 +72,11 @@ function Expenses() {
     loadCategories();
   }, [notification]);
 
-  async function loadItems() {
+  async function loadItems(params = {}) {
     setLoading(true);
 
     try {
-      const data = await expenseService.getAll();
+      const data = await expenseService.getAll(params);
       setItems(data || []);
     } catch (error) {
       console.error(error);
@@ -130,59 +135,79 @@ function Expenses() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
+  function handleChangeFilter(event) {
+    const { name, value } = event.target;
+    setFormFilter((prev) => ({ ...prev, [name]: value }));
+  }
+
   async function handleSubmit(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  try {
-    const payload = {
-      description: formData.description,
-      amount: Number(formData.amount),
-      date: formData.date,
-      status: formData.status,
-      categoryId: Number(formData.categoryId),
-      userId: currentUserId,
-    };
+    try {
+      const payload = {
+        description: formData.description,
+        amount: Number(formData.amount),
+        date: formData.date,
+        status: formData.status,
+        categoryId: Number(formData.categoryId),
+        userId: currentUserId,
+      };
 
-    if (editingItem) {
-      await expenseService.update(payload, editingItem.id);
-    } else {
-      await expenseService.create(payload);
+      if (editingItem) {
+        await expenseService.update(payload, editingItem.id);
+      } else {
+        await expenseService.create(payload);
+      }
+
+      await loadItems();
+      closeModal();
+
+      setNotification({
+        message: editingItem
+          ? "Despesa atualizada com sucesso!"
+          : "Despesa cadastrada com sucesso!",
+        type: "success",
+      });
+    } catch (error) {
+      setNotification({
+        message: error.response?.data?.message || error.message || "Erro ao salvar despesa",
+        type: "error",
+      });
     }
-
-    await loadItems();
-    closeModal();
-
-    setNotification({
-      message: editingItem
-        ? "Despesa atualizada com sucesso!"
-        : "Despesa cadastrada com sucesso!",
-      type: "success",
-    });
-  } catch (error) {
-    setNotification({
-      message: error.response?.data?.message || error.message || "Erro ao salvar despesa",
-      type: "error",
-    });
   }
-}
 
-async function handleDelete(id) {
-  try {
-    await expenseService.delete(id);
-    await loadItems();
-    setNotification({ message: "Despesa excluída com sucesso!", type: "success" });
-  } catch (error) {
-    setNotification({
-      message: error.response?.data?.message || error.message || "Erro ao excluir despesa",
-      type: "error",
-    });
+  async function handleDelete(id) {
+    try {
+      await expenseService.delete(id);
+      await loadItems();
+      setNotification({ message: "Despesa excluída com sucesso!", type: "success" });
+    } catch (error) {
+      setNotification({
+        message: error.response?.data?.message || error.message || "Erro ao excluir despesa",
+        type: "error",
+      });
+    }
   }
-}
 
   const filteredItems = items.filter((item) => {
     const searchText = `${item.description || ""} ${item.amount || ""} ${item.date || ""} ${item.status || ""}`.toLowerCase();
     return searchText.includes(search.toLowerCase());
   });
+
+  async function handleSearch(event) {
+    event.preventDefault();
+
+    try {
+      const params = {
+        dateInicial: formFilter.dateInicial,
+        dateFinal: formFilter.dateFinal
+      }
+
+      await loadItems(params)
+    } catch (error) {
+      
+    }
+  }
 
   return (
     <div className="page-shell">
@@ -197,13 +222,39 @@ async function handleDelete(id) {
       </div>
 
       <div className="page-actions">
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Pesquisar despesa..."
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-        />
+        <div>
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Pesquisar despesa..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+
+          <form onSubmit={handleSearch}>
+            <span id="filter-periodo">
+              <input
+                type="date"
+                className="periodo"
+                id="periodo-inicial"
+                value={formFilter.dateInicial}
+                onChange={handleChangeFilter}
+              />
+              
+              <span>-</span>
+
+              <input
+                type="date"
+                className="periodo"
+                id="periodo-final"
+                value={formFilter.dateFinal}
+                onChange={handleChangeFilter}
+              />
+            </span>
+
+            <button type="submit">Buscar</button>
+          </form>
+        </div>
 
         <button type="button" className="primary-button" onClick={openCreateModal}>
           <FontAwesomeIcon icon={faPlus} />
