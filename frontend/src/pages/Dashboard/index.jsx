@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Notification from "../../components/Notification"
 import SummaryCategory from "../../components/Charts/SummaryCategory";
+import { dashboardService } from "./../../services/dashboardService.js";
+import './index.css';
 
 function Home() {
   const [notification, setNotification] = useState(() => {
@@ -30,21 +32,49 @@ function Home() {
 
     return { message: "", type: "error" };
   });
+  const [totalExpenses, setTotalExpenses] = useState(0);
+  const [qtdeExpenses, setQtdeExpenses] = useState(0);
 
-  const series = [44, 55, 41, 17, 15];
+  useEffect(() => {
+      async function loadTotalExpenses() {
+        try {
+          const data = await dashboardService.totalExpenses();
+          setTotalExpenses(data.total);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      async function loadQtdeExpenses() {
+        try {
+          const data = await dashboardService.qtdeExpenses();
+          setQtdeExpenses(data.quantidade);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      
+      loadQtdeExpenses();
+      loadTotalExpenses();
+    }, []);
 
   return (
     <>
-      <Notification
-        message={notification.message}
-        type={notification.type}
-        onClose={() =>
-          setNotification({ message: "", type: notification.type })
-        }
-      />
+      <div className="container">
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() =>
+            setNotification({ message: "", type: notification.type })
+          }
+        />
 
-      <div style={{ maxWidth: 400, margin: "0 auto" }}>
-        <SummaryCategory />
+        <div className="dashboard">
+          <div className="card" id="total-despesas">Total de despesas: R$ {totalExpenses}</div>
+          <div className="card" id="qtde-despesas">Quantidade de despesas: {qtdeExpenses}</div>
+          <div className="card" id="summary">
+            <SummaryCategory />
+          </div>
+        </div>
       </div>
     </>
   );

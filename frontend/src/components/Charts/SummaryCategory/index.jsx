@@ -55,6 +55,7 @@ function SummaryCategory() {
     series={series}
     type="bar"
     height={500}
+    width={1000}
     />
   );
 }

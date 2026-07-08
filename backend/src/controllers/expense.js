@@ -4,8 +4,8 @@ const ExpenseModel = require('../models/expense');
 const HttpError = require('../errors/HttpError');
 
 class ExpenseController {
-    async getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status) {
-        let expenses = await ExpenseModel.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status);
+    async getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status, userId) {
+        let expenses = await ExpenseModel.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status, userId);
         
         return expenses;
     }

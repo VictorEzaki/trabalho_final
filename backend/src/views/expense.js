@@ -6,8 +6,9 @@ class ExpenseView {
     async getAll(req, res, next) {
         try {
             const { categoryId, dateIni, dateFim, vlMin, vlMax, status } = req.query;
+            const userId  = req.user.id;
             
-            const expenses = await ExpenseController.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status);
+            const expenses = await ExpenseController.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status, userId);
             
             res.status(200).json(expenses);
         } catch (error) {
