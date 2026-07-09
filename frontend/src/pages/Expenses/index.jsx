@@ -33,7 +33,7 @@ function Expenses() {
     dateFinal: "",
     valueMin: "",
     valueMax: "",
-  }); 
+  });
 
   const [notification, setNotification] = useState(() => {
     const flashMessage = sessionStorage.getItem("flashMessage");
@@ -202,12 +202,14 @@ function Expenses() {
     try {
       const params = {
         dateInicial: formFilter.dateInicial,
-        dateFinal: formFilter.dateFinal
+        dateFinal: formFilter.dateFinal,
+        valueMin: formFilter.valueMin,
+        valueMax: formFilter.valueMax,
       }
 
       await loadItems(params)
     } catch (error) {
-      
+
     }
   }
 
@@ -224,71 +226,71 @@ function Expenses() {
       </div>
 
       <div className="page-actions">
-  <div className="filters">
-    <input
-      type="text"
-      className="search-input"
-      placeholder="Pesquisar despesa..."
-      value={search}
-      onChange={(event) => setSearch(event.target.value)}
-    />
+        <div className="filters">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Pesquisar despesa..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
 
-    <form className="filter-form" onSubmit={handleSearch}>
-      <span class="filters-group">
-        <input
-          type="date"
-          name="dateInicial"
-          className="search-input periodo"
-          value={formFilter.dateInicial}
-          onChange={handleChangeFilter}
-        />
+          <form className="filter-form" onSubmit={handleSearch}>
+            <span class="filters-group">
+              <input
+                type="date"
+                name="dateInicial"
+                className="search-input periodo"
+                value={formFilter.dateInicial}
+                onChange={handleChangeFilter}
+              />
 
-        <span>até</span>
+              <span>até</span>
 
-        <input
-          type="date"
-          name="dateFinal"
-          className="search-input periodo"
-          value={formFilter.dateFinal}
-          onChange={handleChangeFilter}
-        />
-      </span>
+              <input
+                type="date"
+                name="dateFinal"
+                className="search-input periodo"
+                value={formFilter.dateFinal}
+                onChange={handleChangeFilter}
+              />
+            </span>
 
-      <span class="filters-group">
-        <input
-          type="number"
-          name="valueMin"
-          className="search-input value"
-          placeholder="Valor mínimo"
-          value={formFilter.valueMin}
-          onChange={handleChangeFilter}
-        />
+            <span class="filters-group">
+              <input
+                type="number"
+                name="valueMin"
+                className="search-input value"
+                placeholder="Valor mínimo"
+                value={formFilter.valueMin}
+                onChange={handleChangeFilter}
+              />
 
-        <span>-</span>
+              <span>-</span>
 
-        <input
-          type="number"
-          name="valueMax"
-          className="search-input value"
-          placeholder="Valor máximo"
-          value={formFilter.valueMax}
-          onChange={handleChangeFilter}
-        />
-      </span>
+              <input
+                type="number"
+                name="valueMax"
+                className="search-input value"
+                placeholder="Valor máximo"
+                value={formFilter.valueMax}
+                onChange={handleChangeFilter}
+              />
+            </span>
 
-      <button type="submit">Buscar</button>
-    </form>
-  </div>
+            <button type="submit">Buscar</button>
+          </form>
+        </div>
 
-  <button
-    type="button"
-    className="primary-button"
-    onClick={openCreateModal}
-  >
-    <FontAwesomeIcon icon={faPlus} />
-    <span>Nova Despesa</span>
-  </button>
-</div>
+        <button
+          type="button"
+          className="primary-button"
+          onClick={openCreateModal}
+        >
+          <FontAwesomeIcon icon={faPlus} />
+          <span>Nova Despesa</span>
+        </button>
+      </div>
 
       <div className="table-wrapper">
         <table className="data-table">

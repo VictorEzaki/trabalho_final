@@ -7,6 +7,8 @@ class ExpenseView {
         try {
             const { categoryId, dateIni, dateFim, vlMin, vlMax, status } = req.query;
             const userId  = req.user.id;
+            console.log(vlMin);
+            console.log(vlMax);
             
             const expenses = await ExpenseController.getAll(categoryId, dateIni, dateFim, vlMin, vlMax, status, userId);
             
