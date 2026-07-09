@@ -60,8 +60,9 @@ class UserModel {
     
     async deleteUser(id, transaction) {
         return db.destroy({
-            where: { id }
-        }, {transaction: transaction});
+            where: { id },
+            transaction
+        });
     }
     
 }
